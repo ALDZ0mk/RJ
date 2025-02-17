@@ -21,16 +21,16 @@ from betting_system import place_bet, check_bets
 from user_rewards import add_user_points, get_top_users
 from database import init_db
 
-# تحميل التوكن من المتغيرات البيئية أو ملف الإعدادات
+# ✅ تحميل التوكن من المتغيرات البيئية لحماية البيانات
 API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 if not API_TOKEN:
     raise ValueError("❌ خطأ: لم يتم العثور على التوكن. تأكد من ضبط TELEGRAM_BOT_TOKEN في المتغيرات البيئية.")
 
-# تهيئة البوت والموزع
+# ✅ تهيئة البوت والموزع
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
-# تهيئة قاعدة البيانات
+# ✅ تهيئة قاعدة البيانات قبل تشغيل البوت
 init_db()
 
 # 🔹 القائمة الرئيسية مع الأزرار التفاعلية
@@ -52,12 +52,12 @@ def main_menu():
     )
     return keyboard
 
-# أمر البدء
+# ✅ أمر البدء
 @dp.message_handler(commands=["start"])
 async def send_welcome(message: types.Message):
     await message.reply("🎉 أهلاً بك في بوت كرة القدم! اختر من القوائم أدناه:", reply_markup=main_menu())
 
-# التعامل مع الأزرار
+# ✅ التعامل مع الأزرار
 @dp.callback_query_handler(lambda call: True)
 async def callback_handler(call: types.CallbackQuery):
     if call.data == "leagues":
@@ -93,7 +93,7 @@ async def callback_handler(call: types.CallbackQuery):
             InlineKeyboardButton("🔙 العودة", callback_data="main_menu"),
         ))
 
-# تشغيل البوت
+# ✅ تشغيل البوت باستخدام `asyncio`
 async def main():
     logging.basicConfig(level=logging.INFO)
     await dp.start_polling()
