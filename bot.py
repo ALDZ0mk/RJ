@@ -1,4 +1,6 @@
 import logging
+import os
+import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils import executor
@@ -19,8 +21,12 @@ from betting_system import place_bet, check_bets
 from user_rewards import add_user_points, get_top_users
 from database import init_db
 
-# إعدادات البوت
-API_TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
+# تحميل التوكن من المتغيرات البيئية أو ملف الإعدادات
+API_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+if not API_TOKEN:
+    raise ValueError("❌ خطأ: لم يتم العثور على التوكن. تأكد من ضبط TELEGRAM_BOT_TOKEN في المتغيرات البيئية.")
+
+# تهيئة البوت والموزع
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
@@ -88,6 +94,9 @@ async def callback_handler(call: types.CallbackQuery):
         ))
 
 # تشغيل البوت
-if __name__ == "__main__":
+async def main():
     logging.basicConfig(level=logging.INFO)
-    executor.start_polling(dp)
+    await dp.start_polling()
+
+if __name__ == "__main__":
+    asyncio.run(main())
